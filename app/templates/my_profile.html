@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% block content %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                <div class="alert alert-info">{{ message }}</div>
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <div style="color: #fff;">
+        {% for table, match_id in fav_matches.items() %}
+            <span>Table: {{ table }} - Match Id: {{ match_id }}</span><br>
+        {% endfor %}
+    </div>
+{% endblock %}

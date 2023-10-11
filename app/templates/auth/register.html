@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='auth/register_style.css') }}">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash_message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<div class="register_wrapper">
+    <h1 class="title">Sign Up</h1>
+    <form class="register_form" method="post" novalidate>
+        {{ form.hidden_tag() }}
+        <div>{{ form.username(class="input_box") }}<i class="fa-solid fa-user" style="color: #ffffff;"></i></div>
+        <div>{{ form.email(class="input_box bottom") }}<i class="fa-solid fa-envelope" style="color: #ffffff;"></i></div>
+        <div>{{ form.password(class="input_box bottom") }}<i class="fa-solid fa-lock" style="color: #ffffff;"></i></div>
+        <div>{{ form.password2(class="input_box bottom") }}<i class="fa-solid fa-unlock" style="color: #ffffff;"></i></div>
+        {{ form.submit(class="register_btn") }}
+    </form>
+    <p class="register">You already have an account?<a class="signup" href="{{ url_for('login') }}">Login</a></p>
+</div>
+{% endblock %}

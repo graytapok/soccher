@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='index.css') }}">
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="flash_message">{{ message }}</div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+<div class="index">
+    <div class="urls">
+        <a class="button_link" href="{{ url_for('leagues') }}"><span class="button">Leagues</span></a>
+        <a class="button_link" href="{{ url_for('countrys_ranking') }}"><span class="button">Countrys ranking</span></a>
+    </div>
+    <div class="today">
+        <h3 class="topping">Today's matches that may interest you</h3>
+            {% for id in matches %}
+                {% set fav = url_for('add_favorite_game', match_id=id) %}
+                {% set details_link = url_for('match_details', match_id=id) %}
+                {% set ma_id = id %}
+                <div class="match">
+                    {% if id in fav_ids %}
+                        <a href="{{ fav }}"><i id="{{ id }}" class="fa-solid fa-star"></i></a>
+                    {% else %}
+                        <a href="{{ fav }}"><i id="{{ ma_id }}" class="fa-regular fa-star"></i></a>
+                    {% endif %}
+                    <a href="{{ details_link }}" class="teams">
+                        <span class="time">{{ matches[id][2] }}</span>
+                        <span class="home_team">{{ matches[id][0] }}</span>
+                        <span class="away_team">{{ matches[id][1] }}</span>
+                    </a>
+                </div>
+            {% endfor %}
+    </div>
+</div>
+{% endblock %}

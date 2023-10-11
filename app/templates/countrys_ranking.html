@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='countys_ranking.css') }}">
+<div class="ranking">
+    {% for country in countrys %}
+        {% set link = url_for('country', country_name=countrys[country].lower()) %}
+        <style>
+            .country_a:hover {
+                background-color: {{ colors[country][1] }};
+                color: {{ colors[country][0] }};
+            }
+        </style>
+        <p class="country">
+            Rank {{ country }}:
+            {% if colors[country][0] == colors[country][1]: %}
+                {% set color = [colors[country][0], "#000000"] %}
+            {% else %}
+                {% set color = [colors[country][0], colors[country][1]] %}
+            {% endif %}
+            <a style="background-color: {{ color[0] }};color: {{ color[1] }};" href="{{ link }}">
+                {{ countrys[country] }}
+            </a>
+        </p>
+    {% endfor %}
+</div>
+
+{% endblock %}

@@ -1,0 +1,53 @@
+<link rel="stylesheet" href="{{ url_for('static', filename='includes/navbar_style.css') }}">
+
+<div class="logout_container">
+    <h1 class="title">Logout</h1>
+    <span class="ques">Are you sure you want to log out?</span>
+    <form class="awnser">
+        <button class="button" onclick="logOutHideMenu()">No</button>
+        <a href="{{ url_for('logout') }}" class="button" id="yes">Yes</a>
+    </form>
+</div>
+
+<header class="navbar">
+    <div class="logo">
+        <span>ScrTracker</span>
+    </div>
+    <nav>
+        <ul class="nav_links">
+            <li><a href="{{ url_for('index') }}">Home</a></li>
+            {% if not current_user.is_anonymous %}
+            <li><a href="{{ url_for('my_profile') }}">My Profile</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+    <nav class="right">
+        <ul class="nav_btns">
+            <li><a class="nav_btn loop"><i id="drp_icon" class="fa-solid fa-magnifying-glass"></i></a></li>
+            <li>
+                <div class="dropdown">
+                    <ul class="menu" id="dropdown_menu">
+                        <li>
+                            <a style="margin-bottom: 5px;" href="{{ url_for('settings') }}">Settings</a>
+                            <i class="fa-solid fa-sliders" style="color: #fff;"></i>
+                        </li>
+                        <li>
+                            <a href="#">Darkmode</a>
+                            <i id="mode" class="fa-solid fa-circle-half-stroke"></i>
+                        </li>
+                    </ul>
+                    <a id="link"  class="nav_btn drp" onclick="changeIcon()" aria-controls="my-dropdown2" role="button" data-toggle="dropdown">
+                        <i id="drop_icon" class="fas fa-solid fa-bars"></i>
+                    </a>
+                </div>
+            </li>
+            {% if current_user.is_anonymous %}
+            <li><a class="nav_btn log" href="{{ url_for('login') }}">{{ "Login" }}</a></li>
+            {% endif %}
+            {% if not current_user.is_anonymous %}
+            <li><a id="danger" class="nav_btn log" onclick="logOutShowMenu()">{{ "Logout" }}</a></li>
+            {% endif %}
+        </ul>
+    </nav>
+</header>
+<script type="text/javascript" src="{{ url_for('static', filename='javaScript/navbar.js') }}"></script>

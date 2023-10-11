@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='leagues.css') }}">
+<div class="leagues">
+    <div class="games_overview">
+            <ul class="games_list">
+                <h2>Premier League</h2>
+                {% for id in premier_league %}
+                    {% set link = url_for('match_details', match_id=id) %}
+                    <a href="{{ link }}"><li class="game_item">
+                        <p class="home_team">{{ premier_league[id][0] }}</p>
+                        <p class="away_team">{{ premier_league[id][1] }}</p>
+                    </li></a>
+                {% endfor %}
+            </ul>
+
+            <ul class="games_list">
+                <h2>La Liga</h2>
+                {% for id in laliga %}
+                    {% set link = url_for('match_details', match_id=id) %}
+                    <a href="{{ link }}"><li class="game_item">
+                        <p class="home_team">{{ laliga[id][0] }}</p>
+                        <p class="away_team">{{ laliga[id][1] }}</p>
+                    </li></a>
+                {% endfor %}
+            </ul>
+
+            <ul class="games_list">
+                <h2>Bundesliga</h2>
+                {% for id in bundesliga %}
+                        {% set link = url_for('match_details', match_id=id) %}
+                    <a href="{{ link }}"><li class="game_item">
+                        <p class="home_team">{{ bundesliga[id][0] }}</p>
+                        <p class="away_team">{{ bundesliga[id][1] }}</p>
+                    </li></a>
+                {% endfor %}
+            </ul>
+
+            <ul class="games_list">
+                <h2>Seria A</h2>
+                {% for id in seria_a %}
+                        {% set link = url_for('match_details', match_id=id) %}
+                    <a href="{{ link }}"><li class="game_item">
+                        <p class="home_team">{{ seria_a[id][0] }}</p>
+                        <p class="away_team">{{ seria_a[id][1] }}</p>
+                    </li></a>
+                {% endfor %}
+            </ul>
+
+            <ul class="games_list">
+                <h2>Ligue 1</h2>
+                {% for id in ligue_1 %}
+                        {% set link = url_for('match_details', match_id=id) %}
+                    <a href="{{ link }}"><li class="game_item">
+                        <p class="home_team">{{ ligue_1[id][0] }}</p>
+                        <p class="away_team">{{ ligue_1[id][1] }}</p>
+                    </li></a>
+                {% endfor %}
+            </ul>
+
+            <ul class="games_list">
+                <h2>Ukraine Premiere League</h2>
+                {% for id in ukraine %}
+                        {% set link = url_for('match_details', match_id=id) %}
+                    <a href="{{ link }}"><li class="game_item">
+                        <p class="home_team">{{ ukraine[id][0] }}</p>
+                        <p class="away_team">{{ ukraine[id][1] }}</p>
+                    </li></a>
+                {% endfor %}
+            </ul>
+    </div>
+</div>
+{% endblock %}

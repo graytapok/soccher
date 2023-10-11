@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='match_details.css') }}">
+<div class="match_details">
+    <div class="overview">
+        <h3>Overview</h3>
+        <span>Posession</span>
+    </div>
+    <div class="match_teams">
+        <span style="background: {{ team['home'][1] }};">{{ team["home"][0] }}</span>
+        <span>{{ score["away"] }}:{{ score["away"] }}</span>
+        <span style="background: {{ team['away'][1] }};">{{ team["away"][0] }}</span>
+    </div>
+</div>
+{% endblock %}

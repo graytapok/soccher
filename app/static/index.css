@@ -1,0 +1,93 @@
+.index .urls {
+    display: flex;
+    margin: 25px;
+    border-radius: 5px;
+    background-color: var(--navbar_color);
+    border: 2px solid var(--border_light);
+}
+
+.index .button_link {
+    width: 200px;
+    display: flex;
+}
+
+.index .button {
+    background-color: var(--navbar_color);
+    color: #fff;
+    padding: 10px;
+    margin: 25px 0 25px 25px;
+    width: 200px;
+    border-radius: 5px;
+    transition: all 0.5s;
+    border: 2px solid var(--border_light);
+}
+
+.index .button:hover {
+    border-color: var(--hover_bg_color);
+    text-shadow: 0 0 20px #fff;
+}
+
+.index .today {
+    display: flex;
+    flex-direction: column;
+    width: 20%;
+    min-width: 400px;
+    margin: 25px;
+    padding: 20px;
+    border: 2px solid var(--border_light);
+    border-radius: 5px;
+    background-color: var(--navbar_color);
+}
+
+.index .today .topping {
+    padding: 10px;
+    margin: 0;
+    color: #fff;
+    font-weight: normal;
+}
+
+.index .today .match {
+    display: flex;
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0px;
+    margin-top: 10px;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 5px;
+    transition: all 0.3s;
+}
+
+.index .today .match:hover {
+    border-color: var(--hover_bg_color);
+    color: #fff;
+}
+
+.index .today .match .teams {
+    display: flex;
+    flex-direction: column;
+    color: rgba(255, 255, 255, 0.8);
+    width: 100%;
+}
+
+.index .today .match i {
+    color: rgba(255, 255, 255, 0.8);
+    position: absolute;
+    padding-top: 23px;
+    left: 55px;
+    transition: all 0.3s;
+}
+
+.index .today .match i:hover {
+    color: white;
+}
+
+.index .today .match .time {
+    position: absolute;
+    left: 90px;
+    padding-top: 20px;
+}
+
+.index .today .match .home_team,
+.index .today .match .away_team {
+    padding: 5px;
+    margin: 0 0 0 100px;
+}

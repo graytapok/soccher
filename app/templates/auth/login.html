@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='auth/login_style.css') }}"/>
+<div class="login_wrapper">
+    <h1 class="title">Login</h1>
+    <form class="login_form" method="post" novalidate>
+        {% if incorrect == "incorrect" %}
+            {% set form_corr = "input_box incorrect" %}
+        {% else %}
+            {% set form_corr = "input_box" %}
+        {% endif %}
+        {{ form.hidden_tag() }}
+        <div>{{ form.username(class=form_corr) }}<i class="fa-solid fa-user" style="color: #ffffff;"></i></div>
+        <div>{{ form.password(class=form_corr) }}<i class="fa-solid fa-lock" style="color: #ffffff;"></i></div>
+
+        <div class="remember_message">
+            <p class="remember_me">
+                {{ form.remember_me(class="check_box", style="cursor: pointer;") }}
+                {{ form.remember_me.label(style="cursor: pointer;") }}
+            </p>
+            {% if incorrect == "incorrect" %}
+                    <p class="message">Username or passwort is not correct!</p>
+            {% endif %}
+        </div>
+
+        {{ form.submit(class="login_btn") }}
+    </form>
+    <p class="register">Don't have an account?<a class="signup" href="{{ url_for('register') }}">Sign Up</a></p>
+</div>
+{% endblock %}

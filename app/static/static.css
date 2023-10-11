@@ -1,0 +1,73 @@
+/* Headers */
+* {
+    font-family: 'Open Sans', sans-serif;
+}
+
+:root {
+    --background_color: rgba(255, 255, 255, 0.5);
+    --hover_bg_color: #5f7adb;
+    --hover_bg_color_2: #4c4c4d;
+    --navbar_color: #26292B;
+    --links_color: rgba(255, 255, 255, 0.5);
+    --block-color: #8f8f8f;
+    --border_light: rgba(255, 255, 255, 0.5);
+    --btn_glow: #00b2c9;
+    --green_button: 78, 186, 35;
+    --red_button: 186, 35, 35;
+}
+
+body {
+    margin: 0px;
+    max-width: 100%;
+    overflow-x: hidden;
+    background-color: rgb(101, 96, 96);
+    background-attachment: fixed;
+    background-repeat: no-repeat;
+    background-size: cover;
+}
+
+.display-5 {
+    padding: 3rem 2rem;
+    color: white;
+    margin-bottom: 3px;
+}
+
+a {
+    text-decoration: none;
+}
+
+.flash_message {
+    position: absolute;
+    color: white;
+    right: 0;
+    margin: 10px;
+}
+/* 
+.logout_container {
+    background-color: var(--navbar_color);
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    width: 500px;
+    height: 400px;
+    border-radius: 40px;
+    z-index: 10;
+    display: flex;
+    text-align: center;
+    flex-direction: column;
+}
+
+.logout_container .title {
+    text-align: center;
+    color: white;
+    font-size: 40px;
+    margin: 40px 0 10px 0;
+    padding: 0px;
+}
+
+.logout_container .ques {
+    font-size: 25px;
+    margin: 20px 0 20px 0;
+} */

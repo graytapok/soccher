@@ -1,0 +1,117 @@
+/* register form */
+
+.register_wrapper {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: var(--navbar_color);
+    padding: 50px;
+    width: 500px;
+    min-width: 350px;
+    height: 520px;
+    max-width: 50%;
+    border: 2px solid var(--border_light);
+    border-radius: 30px;
+}
+
+.register_wrapper .title {
+    text-align: center;
+    color: white;
+    font-size: 40px;
+    margin: 0px;
+    margin-bottom: 20px;
+    padding: 0px;
+}
+
+.register_wrapper .register_form {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.register_wrapper .input_box {
+    position: relative;
+    margin-top: 20px;
+    padding: 0 20% 0 4%;
+    width: 75.5%;
+    height: 50px;
+    font-size: 16px;
+    background: transparent;
+    outline: none;
+    color: white;
+    transition: all 0.3s ease 0s;
+    border: 2px solid rgba(255, 255, 255,  .3);
+    border-radius: 10px;
+}
+
+.register_wrapper .input_box:focus, .input_box:hover {
+    border-color: white;
+    color: white;
+}
+
+.register_wrapper .input_box::placeholder {
+    color: rgba(255, 255, 255,  .3);
+}
+
+.register_wrapper i {
+    position: absolute;
+    right: 69px;
+    margin: 39.5px 0;
+}
+
+.register_wrapper .register_btn {
+    text-decoration: none;
+    width: 100%;
+    margin-top: 17px;
+    transition: all 0.4s ease 0s;
+    font-size: 20px;
+    padding: 10px;
+    color: var(--navbar-color);
+    background-color: white;
+    border: 2px solid rgba(255, 255, 255, 0.5);
+    border-radius: 10px;
+}
+
+.register_wrapper .register_btn:hover {
+    background-color: var(--hover_bg_color);
+    border-color: var(--hover_bg_color);
+    color: white;
+}
+
+.register_wrapper .register {
+    color: white;
+    margin-top: 20px;
+    justify-content: flex-end;
+}
+
+.register_wrapper .register {
+    display: flex;
+    justify-content: center;
+    flex-direction: row;
+    padding: 0px;
+}
+
+.register_wrapper .ques li {
+    list-style-type: none;
+    padding: 0px;
+    margin: 0px;
+}
+
+.register_wrapper .signup {
+    position: relative;
+    top: -3px;
+    text-decoration: none;
+    font-weight: bold;
+    border: none;
+    padding: 3px;
+    padding-left: 7px;
+    padding-right: 7px;
+    transition: all 0.3s ease 0s;
+    color: rgba(255, 255, 255,  .5);
+}
+
+.register_wrapper .signup:hover {
+    color: white; 
+}
+

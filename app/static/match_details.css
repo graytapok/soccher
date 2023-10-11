@@ -1,0 +1,48 @@
+.match_details {
+    padding: 0;
+    margin: 0;
+}
+
+.match_details .overview {
+    display: flex;
+    flex-direction: column;
+    float: left;
+    margin: 30px;
+    width: 20%;
+    height: 900px;
+    color: #fff;
+    font-size: 30px;
+    padding: 20px;
+    border-radius: 5px;
+    background-color: var(--navbar_color);
+}
+
+.match_details .overview h3 {
+    margin: 0px;
+    padding: 5px;
+    color: #fff;
+    background-color: black;
+    border-radius: 5px;
+}
+
+.match_details .overview p {
+    margin: 0;
+    margin-top: 10px;
+}
+
+.match_details .match_teams {
+    display: flex;
+    flex-direction: row;
+    margin: 30px;
+    color: #fff;
+    font-size: 40px;
+    padding: 30px 30px 30px 60px;
+    border-radius: 5px;
+    background-color: var(--navbar_color);
+}
+
+.match_details .match_teams span {
+    padding: 10px;
+    margin-right: 30px;
+    border-radius: 10px;
+}

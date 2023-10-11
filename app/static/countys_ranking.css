@@ -1,0 +1,16 @@
+.ranking .country {
+    margin: 40px;
+    cursor: pointer;
+    user-select: none;
+    color: #fff;
+    width: 40%;
+}
+
+.ranking .country a {
+    padding: 15px;
+    border-radius: 5px;
+    margin: 15px;
+    cursor: pointer;
+    user-select: none;
+    text-decoration: none;
+}
