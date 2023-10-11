@@ -21,8 +21,8 @@ def index():
     date = datetime.now()
     day, month, year = date.day, date.month, date.year
 
-    matches_file = f"app/api/json/todays_matches/{10}_{month}_{year}.json"
-    
+    matches_file = f"app/api/json/todays_matches/{day}_{month}_{year}.json"
+    print("sasf")
     if not os.path.exists(matches_file):
         create_todays_matches_json()
         while not os.path.exists(matches_file):
@@ -44,7 +44,6 @@ def index():
                 hour = datetime.fromtimestamp(timestamp).hour
                 matches.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name'], f'{hour}:00']})
         priority -= 50
-
 
     fav_ids = []
     if current_user.is_authenticated:
