@@ -1,0 +1,11 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:My Project}/app.db",
+            "name": "ScrTracker"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

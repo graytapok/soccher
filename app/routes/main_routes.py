@@ -21,8 +21,8 @@ def index():
     date = datetime.now()
     day, month, year = date.day, date.month, date.year
 
-    matches_file = f"app/api/json/todays_matches/{day}_{month}_{year}.json"
-    print("sasf")
+    matches_file = (f"app/api/json/todays_matches/{day}_{month}_{year}.json")
+    
     if not os.path.exists(matches_file):
         create_todays_matches_json()
         while not os.path.exists(matches_file):
@@ -44,6 +44,7 @@ def index():
                 hour = datetime.fromtimestamp(timestamp).hour
                 matches.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name'], f'{hour}:00']})
         priority -= 50
+
 
     fav_ids = []
     if current_user.is_authenticated:
@@ -100,37 +101,38 @@ def match_details(match_id):
         data = f.read()
         details_json = json.loads(data)
 
-    statistics_file = f"app/api/json/match_statistics/{match_id}.json"
-    if not os.path.exists(statistics_file):
-        create_match_statistics_json(match_id)
-        os.makedirs(os.path.dirname(statistics_file), exist_ok=True)
-        while not os.path.exists(statistics_file):
-            continue
-    with open(statistics_file, "rb") as f:
-        data = f.read()
-        statistics_json = json.loads(data)
-    
+    #statistics_file = f"app/api/json/match_statistics/{match_id}.json"
+    #if not os.path.exists(statistics_file):
+    #    create_match_statistics_json(match_id)
+    #    os.makedirs(os.path.dirname(statistics_file), exist_ok=True)
+    #    while not os.path.exists(statistics_file):
+    #        continue
+    #with open(statistics_file, "rb") as f:
+    #    data = f.read()
+    #    statistics_json = json.loads(data)
 
     team = {}
     team.update({"home": [details_json["event"]["homeTeam"]["name"], details_json["event"]["homeTeam"]["teamColors"]["primary"]],
                  "away": [details_json["event"]["awayTeam"]["name"], details_json["event"]["awayTeam"]["teamColors"]["primary"]]})
 
     score = {}
-    score.update({"home": details_json["event"]["homeScore"]["normaltime"], 
-                  "away": details_json["event"]["awayScore"]["normaltime"]})
+    try:
+        score.update({"home": details_json["event"]["homeScore"]["normaletime"], "away": details_json["event"]["awayScore"]["normaletime"]})
+    except KeyError:
+        score.update({"home": 0, "away": 0})
 
-    i = 0
-    game_posession = {}
-    for posession in statistics_json["statistics"]:
-        game_posession.update({i: [posession['groups'][1]['statisticsItems'][0]['home'],
-                                   posession['groups'][1]['statisticsItems'][0]['away']]})
-        i += 1
-    return render_template("match_details.html", title="Match Details", match_id=match_id, team=team, posession=game_posession, score=score)
+    #i = 0
+    #game_posession = {}
+    #for posession in statistics_json["statistics"]:
+    #    game_posession.update({i: [posession['groups'][1]['statisticsItems'][0]['home'],
+    #                               posession['groups'][1]['statisticsItems'][0]['away']]})
+    #    i += 1
+    return render_template("match_details.html", title="Match Details", match_id=match_id, team=team, score=score)
 
 
 @app.route("/countrys_ranking")
 def countrys_ranking():
-    file = "app/api/json/ranking.json"
+    file = "app/api/json_files/ranking.json"
     with open(file, 'rb') as f:
         data = f.read()
         json_data = json.loads(data)

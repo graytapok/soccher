@@ -1,5 +1,5 @@
 import requests
-import json
+import json as j
 import os
 from datetime import *
 
@@ -19,8 +19,7 @@ def create_todays_matches_json():
     path = f"app/api/json/todays_matches/{day}_{month}_{year}.json"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as outfile:
-        json.dump(response.json(), outfile)
-
+        j.dump(response.json(), outfile)
 
 
 def create_match_statistics_json(match_id):
@@ -36,8 +35,7 @@ def create_match_statistics_json(match_id):
     path = f"app/api/json/match_statistics/{match_id}.json"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as outfile:
-        json.dump(response.json(), outfile)
-
+        j.dump(response.json(), outfile)
 
 
 def create_match_detail_info_json(match_id):
@@ -47,10 +45,10 @@ def create_match_detail_info_json(match_id):
         "X-RapidAPI-Key": "261229b62cmsh9ff85b6a1f70efep192152jsn0dd435f8eb55",
         "X-RapidAPI-Host": "footapi7.p.rapidapi.com"
     }
-
     response = requests.get(url, headers=headers)
 
     path = f"app/api/json/match_detail_info/{match_id}.json"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as outfile:
-        json.dump(response.json(), outfile)
+        j.dump(response.json(), outfile)
+
