@@ -2,15 +2,20 @@
 
 
 {% block content %}
+{% set h = team['home'][1] %}
+{% set a = team['away'][1] %}
 <link rel="stylesheet" href="{{ url_for('static', filename='match_details.css') }}">
 <div class="match_details">
     <div class="overview">
         <h3>Overview</h3>
+        <a>Composition</a>
+        <a>Posession</a>
     </div>
     <div class="match_teams">
-        <span style="background: {{ team['home'][1] }};">{{ team["home"][0] }}</span>
+        <span style="background: rgba({{h[0]}}, {{h[1]}}, {{h[2]}}, 0.3);">{{ team["home"][0] }}</span>
         <span>{{ score["away"] }}:{{ score["away"] }}</span>
-        <span style="background: {{ team['away'][1] }};">{{ team["away"][0] }}</span>
+        <span style="background: rgba({{a[0]}}, {{a[1]}}, {{a[2]}}, 0.3);">{{ team["away"][0] }}</span>
+        <span>{{ match["starttime"] }}</span>
     </div>
 </div>
 {% endblock %}

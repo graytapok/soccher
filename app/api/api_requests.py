@@ -52,3 +52,16 @@ def create_match_detail_info_json(match_id):
     with open(path, 'w') as outfile:
         j.dump(response.json(), outfile)
 
+def create_categories():
+    url = "https://footapi7.p.rapidapi.com/api/tournament/categories"
+
+    headers = {
+        "X-RapidAPI-Key": "261229b62cmsh9ff85b6a1f70efep192152jsn0dd435f8eb55",
+        "X-RapidAPI-Host": "footapi7.p.rapidapi.com"
+    }
+    response = requests.get(url, headers=headers)
+
+    path = f"app/api/json/api_info/categories.json"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as outfile:
+        j.dump(response.json(), outfile)

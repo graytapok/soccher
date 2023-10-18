@@ -3,25 +3,33 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from app import app, db, login
 from app.models import User, FollowedMatch
-from app.api.api_requests import create_match_statistics_json, create_todays_matches_json, create_match_detail_info_json
+from app.api.api_requests import create_match_statistics_json, create_todays_matches_json, create_match_detail_info_json, create_categories
 
+from PIL import ImageColor
+from icecream import ic
 from datetime import *
-import os
 import requests
 import json
+import os
 
 with app.app_context():
     db.create_all()
     db.session.close_all()
+    with open("app/api/json/api_info/categories.json", "rb") as f:
+        data = f.read()
+        categories_json = json.loads(data)
+    with open("app/api/json/country_codes.json", "rb") as f:
+        data = f.read()
+        country_codes_json = json.loads(data)
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/home", methods=["GET", "POST"])
 @app.route("/index", methods=["GET", "POST"])
 def index():
-    date = datetime.now()
-    day, month, year = date.day, date.month, date.year
+    today = datetime.now()
+    day, month, year = today.day, today.month, today.year
 
-    matches_file = (f"app/api/json/todays_matches/{day}_{month}_{year}.json")
+    matches_file = f"app/api/json/todays_matches/{day}_{month}_{year}.json"
     
     if not os.path.exists(matches_file):
         create_todays_matches_json()
@@ -35,6 +43,14 @@ def index():
 
     matches = {}
     priority = 450
+    country_list = {}
+    for i in country_codes_json:
+        country_list.update({i["label_en"]: i['iso2_code'].lower()})
+    country_list.update({"England": "gb-eng"})
+    country_list.update({'Northern Ireland': "mp"})
+    country_list.update({'Venezuela': "ve"})
+    country_list.update({'Hong Kong': "hk"})
+    country_list.update({'Laos': "la"})
     while len(matches) < 5:
         for event in matches_json["events"]:
             if "women" in event["tournament"]["name"].lower():
@@ -42,9 +58,27 @@ def index():
             elif event["tournament"]["priority"] >= priority:
                 timestamp = event['startTimestamp']
                 hour = datetime.fromtimestamp(timestamp).hour
-                matches.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name'], f'{hour}:00']})
+                minutes = datetime.fromtimestamp(timestamp).minute
+                if minutes < 10:
+                    minutes = "0" + str(datetime.fromtimestamp(timestamp).minute)
+                if hour < 10:
+                    hour = "0" + str(datetime.fromtimestamp(timestamp).hour)
+                is_country = False
+                if event['homeTeam']['name'] in country_list or event['awayTeam']['name'] in country_list:
+                    is_country = True
+                try:
+                    matches.update({event['id']: {"home": event['homeTeam']['name'],
+                                                  "away": event['awayTeam']['name'],
+                                                  "time": f'{hour}:{minutes}',
+                                                  "country": is_country,
+                                                  "home_code": "images/country_flags/" + country_list[event['homeTeam']['name']] + ".png",
+                                                  "away_code": "images/country_flags/" + country_list[event['awayTeam']['name']] + ".png"}})
+                except:
+                    matches.update({event['id']: {"home": event['homeTeam']['name'],
+                                                  "away": event['awayTeam']['name'],
+                                                  "time": f'{hour}:{minutes}',
+                                                  "country": is_country}})
         priority -= 50
-
 
     fav_ids = []
     if current_user.is_authenticated:
@@ -52,7 +86,8 @@ def index():
             fav = FollowedMatch.query.filter_by(match_id=i, user_id=current_user.id).first()
             if fav is not None:
                 fav_ids.append(i)
-    return render_template("index.html", title="Homepage", matches=matches, user=current_user, fav_ids=fav_ids)
+    return render_template("index.html", title="Homepage", matches=matches, user=current_user,
+                           fav_ids=fav_ids)
 
 
 @app.route("/leagues", methods=["GET", "POST"])
@@ -101,33 +136,50 @@ def match_details(match_id):
         data = f.read()
         details_json = json.loads(data)
 
-    #statistics_file = f"app/api/json/match_statistics/{match_id}.json"
-    #if not os.path.exists(statistics_file):
-    #    create_match_statistics_json(match_id)
-    #    os.makedirs(os.path.dirname(statistics_file), exist_ok=True)
-    #    while not os.path.exists(statistics_file):
-    #        continue
-    #with open(statistics_file, "rb") as f:
-    #    data = f.read()
-    #    statistics_json = json.loads(data)
+    statistics_file = f"app/api/json/match_statistics/{match_id}.json"
+    if not os.path.exists(statistics_file):
+        create_match_statistics_json(match_id)
+        os.makedirs(os.path.dirname(statistics_file), exist_ok=True)
+        while not os.path.exists(statistics_file):
+            continue
+    with open(statistics_file, "rb") as f:
+        data = f.read()
+        statistics_json = json.loads(data)
 
     team = {}
-    team.update({"home": [details_json["event"]["homeTeam"]["name"], details_json["event"]["homeTeam"]["teamColors"]["primary"]],
-                 "away": [details_json["event"]["awayTeam"]["name"], details_json["event"]["awayTeam"]["teamColors"]["primary"]]})
+    home_color = ImageColor.getcolor(details_json["event"]["homeTeam"]["teamColors"]["primary"], "RGB")
+    away_color = ImageColor.getcolor(details_json["event"]["awayTeam"]["teamColors"]["primary"], "RGB")
+
+    team.update({"home": [details_json["event"]["homeTeam"]["name"], home_color],
+                 "away": [details_json["event"]["awayTeam"]["name"], away_color]})
+    ic(team)
+
+    match = {}
+    t = details_json["event"]["startTimestamp"]
+    match_time = datetime.fromtimestamp(t)
+    hour = datetime.fromtimestamp(t).hour
+    minutes = datetime.fromtimestamp(t).minute
+    if minutes < 10:
+        minutes = "0" + str(datetime.fromtimestamp(t).minute)
+    if hour < 10:
+        hour = "0" + str(datetime.fromtimestamp(t).minute)
+    match.update({"starttime": f"{hour}:{minutes}, {match_time.day}.{match_time.month}"})
 
     score = {}
     try:
-        score.update({"home": details_json["event"]["homeScore"]["normaletime"], "away": details_json["event"]["awayScore"]["normaletime"]})
+        score.update({"home": details_json["event"]["homeScore"]["normaletime"],
+                      "away": details_json["event"]["awayScore"]["normaletime"]})
     except KeyError:
         score.update({"home": 0, "away": 0})
 
-    #i = 0
-    #game_posession = {}
-    #for posession in statistics_json["statistics"]:
-    #    game_posession.update({i: [posession['groups'][1]['statisticsItems'][0]['home'],
-    #                               posession['groups'][1]['statisticsItems'][0]['away']]})
-    #    i += 1
-    return render_template("match_details.html", title="Match Details", match_id=match_id, team=team, score=score)
+    i = 0
+    game_posession = {}
+    for posession in statistics_json["statistics"]:
+        game_posession.update({i: [posession['groups'][1]['statisticsItems'][0]['home'],
+                                   posession['groups'][1]['statisticsItems'][0]['away']]})
+        i += 1
+    return render_template("match_details.html", title="Match Details", match_id=match_id, team=team,
+                           score=score, match=match)
 
 
 @app.route("/countrys_ranking")
@@ -143,7 +195,8 @@ def countrys_ranking():
         countrys.update({country['team']['ranking']: country['team']['name']})
         colors.update({country['team']['ranking']: [country['team']['teamColors']['primary'],
                                                     country['team']['teamColors']['text']]})
-    return render_template("countrys_ranking.html", title="County Ranking", countrys=countrys, colors=colors)
+    return render_template("countrys_ranking.html", title="County Ranking", countrys=countrys,
+                           colors=colors)
 
 
 @app.route("/countrys_ranking/<country_name>")
