@@ -61,7 +61,7 @@ def create_categories():
     }
     response = requests.get(url, headers=headers)
 
-    path = f"app/api/json/api_info/categories.json"
+    path = f"json/api_info/categories.json"
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'w') as outfile:
         j.dump(response.json(), outfile)
