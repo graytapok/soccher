@@ -2,27 +2,69 @@
 
 {% block content %}
 <link rel="stylesheet" href="{{ url_for('static', filename='countys_ranking.css') }}">
+<style>
+    .container {
+        grid-template-rows: auto repeat({{ dict_len + 1 }}, 100px);
+    }
+</style>
 <div class="ranking">
-    {% for country in countrys %}
-        {% set link = url_for('country', country_name=countrys[country].lower()) %}
-        <style>
-            .country_a:hover {
-                background-color: {{ colors[country][1] }};
-                color: {{ colors[country][0] }};
-            }
-        </style>
-        <p class="country">
-            Rank {{ country }}:
-            {% if colors[country][0] == colors[country][1]: %}
-                {% set color = [colors[country][0], "#000000"] %}
-            {% else %}
-                {% set color = [colors[country][0], colors[country][1]] %}
-            {% endif %}
-            <a style="background-color: {{ color[0] }};color: {{ color[1] }};" href="{{ link }}">
-                {{ countrys[country] }}
-            </a>
-        </p>
-    {% endfor %}
-</div>
+    <table class="ranking_table">
+        <thead>
+            <tr>
+                <th class="th-sort-asc">
+                    <span>Rank</span>
+                </th>
+                <th>
+                    <span>Name</span>
+                </th>
+                <th class="th-sort-desc">
+                    <span>Points</span>
+                </th>
+                <th class="th-sort-desc">
+                    <span>Previous Points</span>
+                </th>
+                <th class="th-sort-asc">
+                    <span>+/-</span>
+                </th>
+                <th>
+                    <span>Position</span>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+        {% for country in countrys %}
+            <tr>
+                {% set link = url_for('country', country_name=countrys[country]["name"].lower()) %}
+                <style>
+                    .country_a:hover {
+                        background-color: {{ colors[country][1] }};
+                        color: {{ colors[country][0] }};
+                    }
+                </style>
+                <td><span>{{ country }}</span></td>
 
+                {% set h = colors[country][0] %}
+                {% set a = colors[country][1] %}
+                <td><a id="{{country}} {{countrys[country]['name']}}" class="item country" style="background-color: rgba({{h[0]}}, {{h[1]}}, {{h[2]}}, 0.5); color: #fff;" href="{{ link }}">
+                    <img src="{{ url_for('static', filename=countrys[country]['code']) }}" class="country_icon">
+                    {{ countrys[country]["name"] }}
+                </a></td>
+                <td><span>{{ countrys[country]["points"] }}</span></td>
+                <td><span>{{ countrys[country]["prev_points"] }}</span></td>
+                <td><span>{{ countrys[country]["diff"] }}</span></td>
+                <td>
+                    {% if country > countrys[country]["prev_ranking"] %}
+                        <i class="fa-solid fa-arrow-down"></i>
+                    {% elif country < countrys[country]["prev_ranking"] %}
+                    <i class="fa-solid fa-arrow-up"></i>
+                    {% elif country == countrys[country]["prev_ranking"]%}
+                    <i class="fa-solid fa-equals"></i>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+</div>
+<script type="text/javascript" src="{{ url_for('static', filename='javaScript/countrys_ranking.js') }}"></script>
 {% endblock %}

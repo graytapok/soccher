@@ -3,7 +3,8 @@ from flask_login import login_user, logout_user, login_required, current_user
 
 from app import app, db, login
 from app.models import User, FollowedMatch
-from app.api.api_requests import create_match_statistics_json, create_todays_matches_json, create_match_detail_info_json, create_categories
+from app.api.api_requests import (create_match_statistics_json, create_todays_matches_json,
+                                  create_match_detail_info_json, create_categories, country_list)
 
 from PIL import ImageColor
 from icecream import ic
@@ -22,6 +23,7 @@ with app.app_context():
         data = f.read()
         country_codes_json = json.loads(data)
 
+
 @app.route("/", methods=["GET", "POST"])
 @app.route("/home", methods=["GET", "POST"])
 @app.route("/index", methods=["GET", "POST"])
@@ -29,7 +31,7 @@ def index():
     today = datetime.now()
     day, month, year = today.day, today.month, today.year
 
-    matches_file = f"app/api/json/todays_matches/{day}_{month}_{year}.json"
+    matches_file = f"app/api/json/todays_matches/{18}_{month}_{year}.json"
     
     if not os.path.exists(matches_file):
         create_todays_matches_json()
@@ -43,14 +45,6 @@ def index():
 
     matches = {}
     priority = 450
-    country_list = {}
-    for i in country_codes_json:
-        country_list.update({i["label_en"]: i['iso2_code'].lower()})
-    country_list.update({"England": "gb-eng"})
-    country_list.update({'Northern Ireland': "mp"})
-    country_list.update({'Venezuela': "ve"})
-    country_list.update({'Hong Kong': "hk"})
-    country_list.update({'Laos': "la"})
     while len(matches) < 5:
         for event in matches_json["events"]:
             if "women" in event["tournament"]["name"].lower():
@@ -71,8 +65,10 @@ def index():
                                                   "away": event['awayTeam']['name'],
                                                   "time": f'{hour}:{minutes}',
                                                   "country": is_country,
-                                                  "home_code": "images/country_flags/" + country_list[event['homeTeam']['name']] + ".png",
-                                                  "away_code": "images/country_flags/" + country_list[event['awayTeam']['name']] + ".png"}})
+                                                  "home_code": "images/country_flags/" +
+                                                               country_list[event['homeTeam']['name']] + ".png",
+                                                  "away_code": "images/country_flags/" +
+                                                               country_list[event['awayTeam']['name']] + ".png"}})
                 except:
                     matches.update({event['id']: {"home": event['homeTeam']['name'],
                                                   "away": event['awayTeam']['name'],
@@ -152,7 +148,6 @@ def match_details(match_id):
 
     team.update({"home": [details_json["event"]["homeTeam"]["name"], home_color],
                  "away": [details_json["event"]["awayTeam"]["name"], away_color]})
-    ic(team)
 
     match = {}
     t = details_json["event"]["startTimestamp"]
@@ -184,7 +179,7 @@ def match_details(match_id):
 
 @app.route("/countrys_ranking")
 def countrys_ranking():
-    file = "app/api/json_files/ranking.json"
+    file = "app/api/json/ranking.json"
     with open(file, 'rb') as f:
         data = f.read()
         json_data = json.loads(data)
@@ -192,11 +187,20 @@ def countrys_ranking():
     countrys = {}
     colors = {}
     for country in json_data["rankings"]:
-        countrys.update({country['team']['ranking']: country['team']['name']})
-        colors.update({country['team']['ranking']: [country['team']['teamColors']['primary'],
-                                                    country['team']['teamColors']['text']]})
+        if country["points"]-country["previousPoints"] == 0:
+            diff = 0
+        else:
+            diff = round(country["points"]-country["previousPoints"], 2)
+        countrys.update({country['team']['ranking']: {"name": country['team']['name'],
+                                                      "code": "images/country_flags/" + country_list[country['team']['name']] + ".png",
+                                                      "points": country["points"],
+                                                      "prev_points": country["previousPoints"],
+                                                      "prev_ranking": country["previousRanking"],
+                                                      "diff": diff}})
+        colors.update({country['team']['ranking']: [ImageColor.getcolor(country['team']['teamColors']['primary'], "RGB"),
+                                                    ImageColor.getcolor(country['team']['teamColors']['text'], "RGB")]})
     return render_template("countrys_ranking.html", title="County Ranking", countrys=countrys,
-                           colors=colors)
+                           colors=colors, dict_len=len(countrys))
 
 
 @app.route("/countrys_ranking/<country_name>")

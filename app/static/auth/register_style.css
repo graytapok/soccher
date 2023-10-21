@@ -90,7 +90,7 @@
     justify-content: center;
     flex-direction: row;
     padding: 0px;
-}
+    font-size: 17px;}
 
 .register_wrapper .ques li {
     list-style-type: none;
@@ -109,6 +109,7 @@
     padding-right: 7px;
     transition: all 0.3s ease 0s;
     color: rgba(255, 255, 255,  .5);
+    font-size: 17px;
 }
 
 .register_wrapper .signup:hover {

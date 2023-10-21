@@ -60,6 +60,10 @@
     transform-origin: left;
 }
 
+.current-link {
+    color: #baada7;
+}
+
 .navbar .nav_links li a:hover {
     color: white;
     text-shadow: 0 0 20px #fff;
@@ -245,7 +249,7 @@
 
 .logout_container .awnser {
     display: flex;
-    justify-content: space-evenly;
+    justify-content: center;
     margin: auto 0 auto 0;
 }
 
@@ -253,6 +257,8 @@
     text-decoration: none;
     font-size: 20px;
     transition: all 0.4s ease 0s;
+    margin-left: 20px;
+    margin-right: 20px;
     width: 120px;
     height: 50px;
     color: rgb(var(--red_button));
@@ -280,4 +286,10 @@
     background-color: rgb(var(--green_button));
     box-shadow: 0 0 20px rgb(var(--green_button));
     color: white;
+}
+
+
+/* Responsive Navbar */
+@media screen and (max-width: 850px) {
+  .navbar .nav_btns {display: none;}
 }

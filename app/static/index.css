@@ -1,5 +1,7 @@
 .index .urls {
     display: flex;
+    min-width: 547px;
+    max-width: 40%;
     margin: 25px;
     border-radius: 5px;
     background-color: var(--navbar_color);
@@ -7,7 +9,7 @@
 }
 
 .index .button_link {
-    width: 200px;
+    width: 300px;
     display: flex;
 }
 
@@ -71,7 +73,7 @@
 .index .today .match i {
     color: rgba(255, 255, 255, 0.8);
     position: absolute;
-    padding-top: 23px;
+    padding-top: 27px;
     left: 58px;
     transition: all 0.3s;
 }
@@ -82,14 +84,14 @@
 
 .index .today .match .teams .time {
     position: absolute;
-    left: 90px;
-    padding-top: 20px;
+    left: 100px;
+    padding-top: 24px;
 }
 
 .index .today .match .teams .home_team,
 .index .today .match .teams .away_team {
     padding: 5px;
-    margin: 0 0 0 100px;
+    margin: 0 0 0 120px;
 }
 
 .index .today .match .teams .country_icon {
