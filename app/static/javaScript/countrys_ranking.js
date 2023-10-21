@@ -4,18 +4,20 @@
  * @param {number} column column to sort
  * @param {boolean} asc sorting increasing or decreasing
  */
-function sortByRank(table, column, asc = true) {
+function sortTableByColumn(table, column, asc = true) {
     const dirModifier = asc ? 1 : -1;
     const tBody = table.tBodies[0];
     const rows = Array.from(tBody.querySelectorAll("tr"));
 
     // Sort each Row
     const sortedRows = rows.sort((a, b) => {
-        const aColTest = a.querySelector(`td:nth-child(${column+2})`).firstChild.textContent.trim();
-        const bColTest = b.querySelector(`td:nth-child(${column+2})`).firstChild.textContent.trim();
+        let aColTest = a.querySelector(`td:nth-child(${column+2})`).textContent.trim();
+        let bColTest = b.querySelector(`td:nth-child(${column+2})`).textContent.trim();
 
         switch (column) {
             case 1:
+                aColTest = a.querySelector(`td:nth-child(${column+2})`).textContent.trim();
+                bColTest = b.querySelector(`td:nth-child(${column+2})`).textContent.trim();
                 return aColTest > bColTest ? (1 * dirModifier) : (-1 * dirModifier);
             case 0:
             case 2:
@@ -49,15 +51,66 @@ document.querySelectorAll(".ranking_table th").forEach(headerCell => {
         const tableElement = headerCell.parentElement.parentElement.parentElement;
         const headerIndex = Array.prototype.indexOf.call(headerCell.parentElement.children, headerCell);
         const currentIsAscending = headerCell.classList.contains("th-sort-asc");
-        
+
+        if ((headerIndex != 5 && headerIndex != 3) && currentIsAscending) {
+            document.querySelectorAll(".fa-up-long").forEach(arrow => {
+                arrow.style.color = "rgba(255, 255, 255, .5)";
+            });
+            document.querySelectorAll(".fa-down-long").forEach(arrow => {
+                arrow.style.color = "rgba(255, 255, 255, .5)";
+            });
+            headerCell.querySelectorAll(".fa-up-long").forEach(arrow => {
+                arrow.style.color = "rgb(255, 255, 255)";
+            });
+        } else if ((headerIndex != 5 && headerIndex != 3) && !currentIsAscending) {
+            document.querySelectorAll(".fa-up-long").forEach(arrow => {
+                arrow.style.color = "rgba(255, 255, 255, .5)";
+            });
+            document.querySelectorAll(".fa-down-long").forEach(arrow => {
+                arrow.style.color = "rgba(255, 255, 255, .5)";
+            });
+            headerCell.querySelectorAll(".fa-down-long").forEach(arrow => {
+                arrow.style.color = "rgb(255, 255, 255)";
+            });
+        };
+
         switch (headerIndex) {
             case 2:
-            case 3:
-                sortByRank(tableElement, headerIndex, currentIsAscending);
+                sortTableByColumn(tableElement, headerIndex, currentIsAscending);
             case 0:
             case 1:
             case 4:
-                sortByRank(tableElement, headerIndex, !currentIsAscending);
+                sortTableByColumn(tableElement, headerIndex, !currentIsAscending);
         };
     });
+});
+
+document.querySelectorAll("#diff_points").forEach(val => {
+    const num = val.innerHTML.trim()
+    if (num > 0) {
+        val.style.color = "rgb(var(--green_button))";
+    } else if (num < 0) {
+        val.style.color = "rgb(var(--red_button))";
+    } else {
+        val.style.color = "rgba(255, 255, 255, 0.5)"
+    };
+});
+
+document.querySelectorAll("#diff_ranking").forEach(val => {
+    const num = val.innerHTML.trim();
+    if (num > 0) {
+        val.style.color = "rgb(var(--green_button))";
+    } else if (num < 0) {
+        val.style.color = "rgb(var(--red_button))";
+    } else {
+        val.style.color = "rgba(255, 255, 255, 0.5)";
+    };
+});
+
+document.querySelectorAll("#diff i").forEach(val => {
+    const num = val.classList;
+    if (num.contains("fa-equals")) {
+        val.style.color = "rgba(255, 255, 255, .5)";
+        console.log(val.style)
+    };
 });

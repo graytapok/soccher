@@ -188,15 +188,23 @@ def countrys_ranking():
     colors = {}
     for country in json_data["rankings"]:
         if country["points"]-country["previousPoints"] == 0:
-            diff = 0
+            diff_points = 0 
+        elif country["points"]-country["previousPoints"] > 0:
+            diff_points = f"+{round(country['points']-country['previousPoints'], 2)}"
         else:
-            diff = round(country["points"]-country["previousPoints"], 2)
+            diff_points = round(country["points"]-country["previousPoints"], 2)
+        ic(country["points"]-country["previousPoints"])
+        if (country["previousRanking"] - country['team']['ranking']) > 0:
+            diff_ranking = f"+{country['previousRanking'] - country['team']['ranking']}" 
+        else: 
+            diff_ranking = country["previousRanking"] - country['team']['ranking']
         countrys.update({country['team']['ranking']: {"name": country['team']['name'],
                                                       "code": "images/country_flags/" + country_list[country['team']['name']] + ".png",
                                                       "points": country["points"],
                                                       "prev_points": country["previousPoints"],
                                                       "prev_ranking": country["previousRanking"],
-                                                      "diff": diff}})
+                                                      "diff_points": diff_points,
+                                                      "diff_ranking": diff_ranking}})
         colors.update({country['team']['ranking']: [ImageColor.getcolor(country['team']['teamColors']['primary'], "RGB"),
                                                     ImageColor.getcolor(country['team']['teamColors']['text'], "RGB")]})
     return render_template("countrys_ranking.html", title="County Ranking", countrys=countrys,
