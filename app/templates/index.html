@@ -21,7 +21,7 @@
                 {% set details_link = url_for('match_details', match_id=id) %}
                 {% set ma_id = id %}
                 <div class="match">
-                    {% if id in fav_ids %}
+                    {% if id in followed_matches %}
                         <a href="{{ fav }}"><i id="{{ id }}" class="fa-solid fa-star"></i></a>
                     {% else %}
                         <a href="{{ fav }}"><i id="{{ ma_id }}" class="fa-regular fa-star"></i></a>

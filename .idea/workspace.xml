@@ -5,20 +5,21 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="20b2f15d-a46d-4778-8920-af98ce359442" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/static/javaScript/countrys_ranking.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app.db" beforeDir="false" afterPath="$PROJECT_DIR$/app.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/api/api_requests.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/api/api_requests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/routes/app/api/json/api_info/categories.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app.db" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/routes/auth_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/auth_routes.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/routes/main_routes.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/routes/main_routes.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/auth/login_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/auth/login_style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/auth/register_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/auth/register_style.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/static/countys_ranking.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/countys_ranking.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/images/country_flags/af.png" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/images/country_flags/af.png" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/includes/navbar_style.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/includes/navbar_style.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/index.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/index.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/static.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/static.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/javaScript/countrys_ranking.js" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/javaScript/countrys_ranking.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/countrys_ranking.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/countrys_ranking.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/leagues.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/leagues.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/README" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/alembic.ini" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/env.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/migrations/script.py.mako" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/requirements.txt" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />

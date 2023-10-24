@@ -13,115 +13,108 @@ import requests
 import json
 import os
 
+# Update the Database and open the JSON files "app/api/json/api_info/categories.json", "app/api/json/country_codes.json".
+# List of all leagues ids.
 with app.app_context():
     db.create_all()
     db.session.close_all()
-    with open("app/api/json/api_info/categories.json", "rb") as f:
-        data = f.read()
-        categories_json = json.loads(data)
     with open("app/api/json/country_codes.json", "rb") as f:
         data = f.read()
         country_codes_json = json.loads(data)
+    with open("app/api/json/api_info/categories.json", "rb") as f:
+        data = f.read()
+        categories_json = json.loads(data)
 
 
 @app.route("/", methods=["GET", "POST"])
 @app.route("/home", methods=["GET", "POST"])
 @app.route("/index", methods=["GET", "POST"])
 def index():
-    today = datetime.now()
-    day, month, year = today.day, today.month, today.year
-
-    matches_file = f"app/api/json/todays_matches/{18}_{month}_{year}.json"
-    
+    # Open or create JSON file for today's matches.
+    d, m, y = datetime.now().day, datetime.now().month, datetime.now().year
+    matches_file = f"app/api/json/todays_matches/{d}_{m}_{y}.json"
     if not os.path.exists(matches_file):
         create_todays_matches_json()
         while not os.path.exists(matches_file):
             continue
-
     os.makedirs(os.path.dirname(matches_file), exist_ok=True)
     with open(matches_file, "rb") as f:
         data = f.read()
         matches_json = json.loads(data)
 
+    # Creating a dict of today's most important matches by "priority".
     matches = {}
     priority = 450
-    while len(matches) < 5:
+    while len(matches) < 10:
         for event in matches_json["events"]:
             if "women" in event["tournament"]["name"].lower():
                 continue
             elif event["tournament"]["priority"] >= priority:
                 timestamp = event['startTimestamp']
                 hour = datetime.fromtimestamp(timestamp).hour
+                hour = "0" + str(hour) if hour < 10 else hour
                 minutes = datetime.fromtimestamp(timestamp).minute
-                if minutes < 10:
-                    minutes = "0" + str(datetime.fromtimestamp(timestamp).minute)
-                if hour < 10:
-                    hour = "0" + str(datetime.fromtimestamp(timestamp).hour)
-                is_country = False
+                minutes = minutes = "0" + str(minutes) if minutes < 10 else minutes
+
                 if event['homeTeam']['name'] in country_list or event['awayTeam']['name'] in country_list:
-                    is_country = True
-                try:
                     matches.update({event['id']: {"home": event['homeTeam']['name'],
                                                   "away": event['awayTeam']['name'],
                                                   "time": f'{hour}:{minutes}',
-                                                  "country": is_country,
+                                                  "country": True,
                                                   "home_code": "images/country_flags/" +
                                                                country_list[event['homeTeam']['name']] + ".png",
                                                   "away_code": "images/country_flags/" +
                                                                country_list[event['awayTeam']['name']] + ".png"}})
-                except:
+                else:
                     matches.update({event['id']: {"home": event['homeTeam']['name'],
                                                   "away": event['awayTeam']['name'],
                                                   "time": f'{hour}:{minutes}',
-                                                  "country": is_country}})
+                                                  "country": False}})
         priority -= 50
 
-    fav_ids = []
+    # Creating a list of User's followed matches.
+    followed_matches = []
     if current_user.is_authenticated:
         for i in matches:
             fav = FollowedMatch.query.filter_by(match_id=i, user_id=current_user.id).first()
             if fav is not None:
-                fav_ids.append(i)
+                followed_matches.append(i)
     return render_template("index.html", title="Homepage", matches=matches, user=current_user,
-                           fav_ids=fav_ids)
+                           followed_matces=followed_matches)
 
 
 @app.route("/leagues", methods=["GET", "POST"])
 def leagues():
+    # Open the JSON file "matches.json".
     file = "app/api/json/matches.json"
     with open(file, 'rb') as f:
         data = f.read()
         json_data = json.loads(data)
 
-    bundesliga, premier_league, laliga, seria_a, ligue_1, ukraine = {}, {}, {}, {}, {}, {}
-
+    # Sorting the matches to their leagues.
+    matches_leagues = {}
+    leagues_accepted = {1: "Premier League",
+                        4: "Ligue 1",
+                        33: "Seria A",
+                        36: "La Liga",
+                        42: "Bundesliga",
+                        384: "Ukraine Premiere League"}
     for event in json_data["events"]:
         if "woman" in event["tournament"]["name"].lower():
             continue
-        elif event["tournament"]["id"] == 1:  # Premier League
-            premier_league.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name']]})
-
-        elif event["tournament"]["id"] == 33:  # Seria A
-            seria_a.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name']]})
-
-        elif event["tournament"]["id"] == 36:  # La Liga
-            laliga.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name']]})
-
-        elif event["tournament"]["id"] == 42:  # Bundesliga
-            bundesliga.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name']]})
-
-        elif event["tournament"]["id"] == 4:  # Ligue_1
-            ligue_1.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name']]})
-
-        elif event["tournament"]["id"] == 384:  # Ukraine Premiere League
-            ukraine.update({event['id']: [event['homeTeam']['name'], event['awayTeam']['name'], event['winnerCode']]})
+        else:
+            league_id = event["tournament"]["id"]
+            if league_id in leagues_accepted:
+                matches_leagues.update({event['id']: {"home": event['homeTeam']['name'],
+                                                      "away": event['awayTeam']['name'],
+                                                      "league": league_id}})
     return render_template("leagues.html",
-                           title="Leagues", ligue_1=ligue_1, premier_league=premier_league, bundesliga=bundesliga,
-                           laliga=laliga, seria_a=seria_a, ukraine=ukraine, json_file="app/api/json/matches.json")
+                           title="Leagues", matches_leagues=matches_leagues, leagues_accepted=leagues_accepted)
 
 
 @app.route("/match_details/<match_id>", methods=["GET", "POST"])
 def match_details(match_id):
+    # Open or create the match details JSON file.
     details_file = f"app/api/json/match_detail_info/{match_id}.json"
     if not os.path.exists(details_file):
         create_match_detail_info_json(match_id)
@@ -132,6 +125,7 @@ def match_details(match_id):
         data = f.read()
         details_json = json.loads(data)
 
+    # Open or create the match statistics JSON file.
     statistics_file = f"app/api/json/match_statistics/{match_id}.json"
     if not os.path.exists(statistics_file):
         create_match_statistics_json(match_id)
@@ -142,13 +136,15 @@ def match_details(match_id):
         data = f.read()
         statistics_json = json.loads(data)
 
+    # Get the team's name and color.
     team = {}
     home_color = ImageColor.getcolor(details_json["event"]["homeTeam"]["teamColors"]["primary"], "RGB")
     away_color = ImageColor.getcolor(details_json["event"]["awayTeam"]["teamColors"]["primary"], "RGB")
-
     team.update({"home": [details_json["event"]["homeTeam"]["name"], home_color],
                  "away": [details_json["event"]["awayTeam"]["name"], away_color]})
 
+    # Get details about the match
+    # Time
     match = {}
     t = details_json["event"]["startTimestamp"]
     match_time = datetime.fromtimestamp(t)
@@ -160,6 +156,7 @@ def match_details(match_id):
         hour = "0" + str(datetime.fromtimestamp(t).minute)
     match.update({"starttime": f"{hour}:{minutes}, {match_time.day}.{match_time.month}"})
 
+    # Score
     score = {}
     try:
         score.update({"home": details_json["event"]["homeScore"]["normaletime"],
@@ -167,6 +164,7 @@ def match_details(match_id):
     except KeyError:
         score.update({"home": 0, "away": 0})
 
+    # Posession
     i = 0
     game_posession = {}
     for posession in statistics_json["statistics"]:
@@ -179,11 +177,13 @@ def match_details(match_id):
 
 @app.route("/countrys_ranking")
 def countrys_ranking():
+    # Open or create the ranking JSON file.
     file = "app/api/json/ranking.json"
     with open(file, 'rb') as f:
         data = f.read()
         json_data = json.loads(data)
 
+    # Get information about each team.
     countrys = {}
     colors = {}
     for country in json_data["rankings"]:
@@ -193,22 +193,25 @@ def countrys_ranking():
             diff_points = f"+{round(country['points']-country['previousPoints'], 2)}"
         else:
             diff_points = round(country["points"]-country["previousPoints"], 2)
-        ic(country["points"]-country["previousPoints"])
         if (country["previousRanking"] - country['team']['ranking']) > 0:
             diff_ranking = f"+{country['previousRanking'] - country['team']['ranking']}" 
         else: 
             diff_ranking = country["previousRanking"] - country['team']['ranking']
-        countrys.update({country['team']['ranking']: {"name": country['team']['name'],
-                                                      "code": "images/country_flags/" + country_list[country['team']['name']] + ".png",
-                                                      "points": country["points"],
-                                                      "prev_points": country["previousPoints"],
-                                                      "prev_ranking": country["previousRanking"],
-                                                      "diff_points": diff_points,
-                                                      "diff_ranking": diff_ranking}})
-        colors.update({country['team']['ranking']: [ImageColor.getcolor(country['team']['teamColors']['primary'], "RGB"),
-                                                    ImageColor.getcolor(country['team']['teamColors']['text'], "RGB")]})
+        countrys.update(
+            {country['team']['ranking']: {"name": country['team']['name'],
+                                          "color":
+                                              ImageColor.getcolor(country['team']['teamColors']['primary'], "RGB"),
+                                          "color_sec":
+                                              ImageColor.getcolor(country['team']['teamColors']['secondary'], "RGB"),
+                                          "code": "images/country_flags/" +
+                                              country_list[country['team']['name']] + ".png",
+                                          "points": country["points"],
+                                          "prev_points": country["previousPoints"],
+                                          "prev_ranking": country["previousRanking"],
+                                          "diff_points": diff_points,
+                                          "diff_ranking": diff_ranking}})
     return render_template("countrys_ranking.html", title="County Ranking", countrys=countrys,
-                           colors=colors, dict_len=len(countrys))
+                           dict_len=len(countrys))
 
 
 @app.route("/countrys_ranking/<country_name>")
@@ -222,13 +225,14 @@ def country(country_name):
 
 @app.route("/add_favorite_game/<match_id>")
 def add_favorite_game(match_id):
+    # Adding or deleting the match from followed matches.
     if not current_user.is_authenticated:
         flash(f"please login: {match_id}")
         return redirect(url_for("index"))
-    fav = FollowedMatch.query.filter_by(match_id=match_id).filter_by(user_id=current_user.id).first()
-    if fav is None:
-        db.session.add(FollowedMatch(user_id=current_user.id, match_id=match_id))
-    else:
+    try:
+        fav = FollowedMatch.query.filter_by(match_id=match_id).filter_by(user_id=current_user.id).first()
         db.session.delete(fav)
+    except:
+        db.session.add(FollowedMatch(user_id=current_user.id, match_id=match_id))
     db.session.commit()
     return redirect(url_for("index"))

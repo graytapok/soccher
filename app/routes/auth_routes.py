@@ -51,5 +51,5 @@ def register():
 def my_profile():
     fav_matches = {}
     for i in FollowedMatch.query.filter_by(user_id=current_user.id):
-        fav_matches.update({i.table_id: i.match_id})
+        fav_matches.update({i.id: i.match_id})
     return render_template("my_profile.html", title="My Profile", user=current_user, fav_matches=fav_matches)

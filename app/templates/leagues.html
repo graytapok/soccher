@@ -5,18 +5,21 @@
 <link rel="stylesheet" href="{{ url_for('static', filename='leagues.css') }}">
 <div class="leagues">
     <div class="games_overview">
+        {% for league, name in leagues_accepted.items() %}
             <ul class="games_list">
-                <h2>Premier League</h2>
-                {% for id in premier_league %}
-                    {% set link = url_for('match_details', match_id=id) %}
-                    <a href="{{ link }}"><li class="game_item">
-                        <p class="home_team">{{ premier_league[id][0] }}</p>
-                        <p class="away_team">{{ premier_league[id][1] }}</p>
-                    </li></a>
+                <h2>{{ name }}</h2>
+                {% for id in matches_leagues %}
+                    {% if matches_leagues[id]["league"] == league %}
+                        {% set link = url_for('match_details', match_id=id) %}
+                        <a href="{{ link }}"><li class="game_item">
+                            <p class="home_team">{{ matches_leagues[id]["home"] }}</p>
+                            <p class="away_team">{{ matches_leagues[id]["away"] }}</p>
+                        </li></a>
+                    {% endif %}
                 {% endfor %}
             </ul>
 
-            <ul class="games_list">
+<!--            <ul class="games_list">
                 <h2>La Liga</h2>
                 {% for id in laliga %}
                     {% set link = url_for('match_details', match_id=id) %}
@@ -69,7 +72,8 @@
                         <p class="away_team">{{ ukraine[id][1] }}</p>
                     </li></a>
                 {% endfor %}
-            </ul>
+            </ul>-->
+        {% endfor %}
     </div>
 </div>
 {% endblock %}

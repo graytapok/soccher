@@ -9,8 +9,8 @@
 </style>
 <div class="ranking">
     <div class="heading">
-        <h1>FIFA's National Team Ranking</h1>
         <img src="{{ url_for('static', filename='images/league_logos/fifa.png') }}">
+        <h1>National Team Ranking</h1>
     </div>
     <table class="ranking_table">
         <thead>
@@ -46,20 +46,13 @@
         <tbody>
             {% for country in countrys %}
                 <tr>
-                    <style>
-                        .country_a:hover {
-                            background-color: {{ colors[country][1] }};
-                            color: {{ colors[country][0] }};
-                        }
-                    </style>
-
                     <td>
                         <span class="td_item">{{ country }}</span>
                     </td>
 
                     <td>
-                        {% set h = colors[country][0] %}
-                        {% set a = colors[country][1] %}
+                        {% set h = countrys[country]["color"] %}
+                        {% set a = countrys[country]["color_sec"] %}
                         {% set link = url_for('country', country_name=countrys[country]["name"].lower()) %}
                         <a id="{{country}} {{countrys[country]['name']}}" class="item country" 
                         style="background-color: rgba({{h[0]}}, {{h[1]}}, {{h[2]}}, 0.5); color: #fff;" href="{{ link }}">
@@ -88,7 +81,7 @@
                             <i class="fa-solid fa-arrow-up"></i>
                             <span id="diff_ranking">{{ countrys[country]["diff_ranking"] }}</span>
                         {% elif country == countrys[country]["prev_ranking"]%}
-                            <i class="fa-solid fa-equals"></i>
+                            <i class="fa-solid fa-equals" style="color: rgba(255, 255, 255, .5)"></i>
                         {% endif %}
                     </td>
                 </tr>

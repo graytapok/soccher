@@ -13,7 +13,7 @@ class User(UserMixin, db.Model):
     password_hash = db.Column(db.String(128))
     about_me = db.Column(db.String(141))
     last_seen = db.Column(db.DateTime, default=datetime.utcnow)
-    fav_matches = db.relationship("FollowedMatch", backref="fav_match", lazy="dynamic")
+    fav_matches = db.relationship("FollowedMatch", backref="user", lazy="dynamic")
 
     def __repr__(self):
         return '<User {}>'.format(self.username)
@@ -27,16 +27,15 @@ class User(UserMixin, db.Model):
     def check_correct_input(self):
         pass
 
-
-@login.user_loader
-def load_user(user):
-    return User.query.get(int(user))
-
 class FollowedMatch(db.Model):
     __tablename__ = "followed_match"
-    table_id =  db.Column(db.Integer, primary_key=True, unique=True)
+    id = db.Column(db.Integer, primary_key=True, unique=True)
     match_id = db.Column(db.Integer)
     user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     def __repr__(self):
-        return f'<table_id: {self.table_id}, match_id: {self.match_id}, user_id: {self.user_id}>'
+        return f'<table_id: {self.id}, match_id: {self.match_id}, user_id: {self.user_id}>'
+
+@login.user_loader
+def load_user(user):
+    return User.query.get(int(user))

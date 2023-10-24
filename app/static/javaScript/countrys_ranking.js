@@ -11,13 +11,11 @@ function sortTableByColumn(table, column, asc = true) {
 
     // Sort each Row
     const sortedRows = rows.sort((a, b) => {
-        let aColTest = a.querySelector(`td:nth-child(${column+2})`).textContent.trim();
-        let bColTest = b.querySelector(`td:nth-child(${column+2})`).textContent.trim();
+        let aColTest = a.querySelector(`td:nth-child(${column+1})`).textContent.trim();
+        let bColTest = b.querySelector(`td:nth-child(${column+1})`).textContent.trim();
 
         switch (column) {
             case 1:
-                aColTest = a.querySelector(`td:nth-child(${column+2})`).textContent.trim();
-                bColTest = b.querySelector(`td:nth-child(${column+2})`).textContent.trim();
                 return aColTest > bColTest ? (1 * dirModifier) : (-1 * dirModifier);
             case 0:
             case 2:
@@ -25,11 +23,6 @@ function sortTableByColumn(table, column, asc = true) {
             case 4:
                 return parseFloat(aColTest) > parseFloat(bColTest) ? (1 * dirModifier) : (-1 * dirModifier);
         }
-        if (column === 1) {
-            
-        } else {
-            return aColTest > bColTest ? (1 * dirModifier) : (-1 * dirModifier);
-        };
     });
 
     // Remove all existing Trs from the table
@@ -85,6 +78,8 @@ document.querySelectorAll(".ranking_table th").forEach(headerCell => {
     });
 });
 
+
+// Coloring the points
 document.querySelectorAll("#diff_points").forEach(val => {
     const num = val.innerHTML.trim()
     if (num > 0) {
@@ -96,6 +91,7 @@ document.querySelectorAll("#diff_points").forEach(val => {
     };
 });
 
+// Coloring the ranking
 document.querySelectorAll("#diff_ranking").forEach(val => {
     const num = val.innerHTML.trim();
     if (num > 0) {
@@ -104,13 +100,5 @@ document.querySelectorAll("#diff_ranking").forEach(val => {
         val.style.color = "rgb(var(--red_button))";
     } else {
         val.style.color = "rgba(255, 255, 255, 0.5)";
-    };
-});
-
-document.querySelectorAll("#diff i").forEach(val => {
-    const num = val.classList;
-    if (num.contains("fa-equals")) {
-        val.style.color = "rgba(255, 255, 255, .5)";
-        console.log(val.style)
     };
 });
