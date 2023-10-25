@@ -22,9 +22,9 @@
                 {% set ma_id = id %}
                 <div class="match">
                     {% if id in followed_matches %}
-                        <a href="{{ fav }}"><i id="{{ id }}" class="fa-solid fa-star"></i></a>
+                        <a href="{{ fav }}"><i class="fa-solid fa-star"></i></a>
                     {% else %}
-                        <a href="{{ fav }}"><i id="{{ ma_id }}" class="fa-regular fa-star"></i></a>
+                        <a href="{{ fav }}"><i class="fa-regular fa-star"></i></a>
                     {% endif %}
                     <a href="{{ details_link }}" class="teams">
                         <span class="time">{{ matches[id]["time"] }}</span>

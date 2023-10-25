@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, login_required, current_user
 from app import app, db, login
 from app.models import User, FollowedMatch
 from app.api.api_requests import (create_match_statistics_json, create_todays_matches_json,
-                                  create_match_detail_info_json, create_categories, country_list)
+                                  create_match_detail_info_json, create_categories_json, country_list)
 
 from PIL import ImageColor
 from icecream import ic
@@ -14,16 +14,13 @@ import json
 import os
 
 # Update the Database and open the JSON files "app/api/json/api_info/categories.json", "app/api/json/country_codes.json".
-# List of all leagues ids.
+# List of all leagues_info ids.
 with app.app_context():
     db.create_all()
     db.session.close_all()
     with open("app/api/json/country_codes.json", "rb") as f:
         data = f.read()
         country_codes_json = json.loads(data)
-    with open("app/api/json/api_info/categories.json", "rb") as f:
-        data = f.read()
-        categories_json = json.loads(data)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -79,11 +76,12 @@ def index():
             fav = FollowedMatch.query.filter_by(match_id=i, user_id=current_user.id).first()
             if fav is not None:
                 followed_matches.append(i)
+    ic(followed_matches)
     return render_template("index.html", title="Homepage", matches=matches, user=current_user,
-                           followed_matces=followed_matches)
+                           followed_matches=followed_matches)
 
 
-@app.route("/leagues", methods=["GET", "POST"])
+@app.route("/leagues_info", methods=["GET", "POST"])
 def leagues():
     # Open the JSON file "matches.json".
     file = "app/api/json/matches.json"
@@ -91,7 +89,7 @@ def leagues():
         data = f.read()
         json_data = json.loads(data)
 
-    # Sorting the matches to their leagues.
+    # Sorting the matches to their leagues_info.
     matches_leagues = {}
     leagues_accepted = {1: "Premier League",
                         4: "Ligue 1",
@@ -108,7 +106,7 @@ def leagues():
                 matches_leagues.update({event['id']: {"home": event['homeTeam']['name'],
                                                       "away": event['awayTeam']['name'],
                                                       "league": league_id}})
-    return render_template("leagues.html",
+    return render_template("leagues_info.html",
                            title="Leagues", matches_leagues=matches_leagues, leagues_accepted=leagues_accepted)
 
 
@@ -187,15 +185,15 @@ def countrys_ranking():
     countrys = {}
     colors = {}
     for country in json_data["rankings"]:
-        if country["points"]-country["previousPoints"] == 0:
-            diff_points = 0 
-        elif country["points"]-country["previousPoints"] > 0:
-            diff_points = f"+{round(country['points']-country['previousPoints'], 2)}"
+        if country["points"] - country["previousPoints"] == 0:
+            diff_points = 0
+        elif country["points"] - country["previousPoints"] > 0:
+            diff_points = f"+{round(country['points'] - country['previousPoints'], 2)}"
         else:
-            diff_points = round(country["points"]-country["previousPoints"], 2)
+            diff_points = round(country["points"] - country["previousPoints"], 2)
         if (country["previousRanking"] - country['team']['ranking']) > 0:
-            diff_ranking = f"+{country['previousRanking'] - country['team']['ranking']}" 
-        else: 
+            diff_ranking = f"+{country['previousRanking'] - country['team']['ranking']}"
+        else:
             diff_ranking = country["previousRanking"] - country['team']['ranking']
         countrys.update(
             {country['team']['ranking']: {"name": country['team']['name'],
@@ -204,7 +202,7 @@ def countrys_ranking():
                                           "color_sec":
                                               ImageColor.getcolor(country['team']['teamColors']['secondary'], "RGB"),
                                           "code": "images/country_flags/" +
-                                              country_list[country['team']['name']] + ".png",
+                                                  country_list[country['team']['name']] + ".png",
                                           "points": country["points"],
                                           "prev_points": country["previousPoints"],
                                           "prev_ranking": country["previousRanking"],
@@ -213,6 +211,20 @@ def countrys_ranking():
     return render_template("countrys_ranking.html", title="County Ranking", countrys=countrys,
                            dict_len=len(countrys))
 
+
+@app.route("/league_ranking/<league_id>")
+def league_ranking(league_id):
+    # Open or create league details
+    details_file = f"app/api/json/match_detail_info/{league_id}.json"
+    if not os.path.exists(details_file):
+        create_match_detail_info_json(league_id)
+        os.makedirs(os.path.dirname(details_file), exist_ok=True)
+        while not os.path.exists(details_file):
+            continue
+    with open(details_file, "rb") as f:
+        data = f.read()
+        league_json = json.loads(data)
+    return render_template("league_ranking.html", title="League Table")
 
 @app.route("/countrys_ranking/<country_name>")
 def country(country_name):
