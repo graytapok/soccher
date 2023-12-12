@@ -4,7 +4,7 @@ import smtplib
 
 def send_registration_email(recevier):
     email_sender = "wvtrupp@gmail.com"
-    email_password = "hwcg mqgh zjae sruh"
+    email_password = ""
     email_recevier = recevier
 
     subject = "New user!"
