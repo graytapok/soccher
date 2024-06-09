@@ -60,9 +60,7 @@
     transform-origin: left;
 }
 
-.current-link {
-    color: #baada7;
-}
+.current-link { color: #baada7;}
 
 .navbar .nav_links li a:hover {
     color: white;
@@ -82,9 +80,7 @@
     margin-right: 15px;
 }
 
-.navbar .right {
-    margin-left: auto;
-}
+.navbar .right { margin-left: auto; }
 
 .navbar .nav_btn {
     text-decoration: none;
@@ -118,7 +114,6 @@
     box-shadow: 0 0 20px 5px rgb(var(--green_button));
 }
 
-
 #danger {
     margin: 0px;
     color: rgb(var(--red_button));
@@ -149,9 +144,6 @@
     padding-left: 14px;
     padding-right: 14px;
 }
-
-
-
 
 
 /* Dropdown */

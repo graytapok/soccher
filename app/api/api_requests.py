@@ -66,7 +66,7 @@ def create_league_available_seasons_json(league_id):
     with open(path, 'w') as outfile:
         j.dump(response.json(), outfile)
 
-def create_league_standings(league_id, season):
+def create_league_standings_json(league_id, season=None):
     seasons_path = f"json/leagues_info/seasons/{league_id}.json"
     if not os.path.exists(seasons_path):
         create_league_available_seasons_json(league_id)
@@ -77,7 +77,16 @@ def create_league_standings(league_id, season):
         data = f.read()
         league_json = j.loads(data)
 
-    url = f"https://footapi7.p.rapidapi.com/api/tournament/{league_id}/season/{season}/standings/total"
+    available_seasons = []
+    cur_season = season
+    for seasons in league_json["seasons"]:
+        available_seasons.append(seasons["id"])
+    if season is None:
+        cur_season = available_seasons[0]
+    elif season not in available_seasons:
+        return "Error"
+
+    url = f"https://footapi7.p.rapidapi.com/api/tournament/{league_id}/season/{cur_season}/standings/total"
     headers = {
         "X-RapidAPI-Key": "261229b62cmsh9ff85b6a1f70efep192152jsn0dd435f8eb55",
         "X-RapidAPI-Host": "footapi7.p.rapidapi.com"
@@ -88,11 +97,21 @@ def create_league_standings(league_id, season):
     with open(path, 'w') as outfile:
         j.dump(response.json(), outfile)
 
+def create_league_media_json(league_id):
+    url = f'https://footapi7.p.rapidapi.com/api/tournament/{league_id}/media'
+    headers = {
+        "X-RapidAPI-Key": "261229b62cmsh9ff85b6a1f70efep192152jsn0dd435f8eb55",
+        "X-RapidAPI-Host": "footapi7.p.rapidapi.com"
+    }
+    response = requests.get(url, headers=headers)
+    path = f"json/leagues_info/media/{league_id}.json"
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, 'w') as outfile:
+        j.dump(response.json(), outfile)
 
-create_league_standings(17, 52186)
 
 country_list = {}
-country_codes_path = "json/country_codes.json"
+country_codes_path = "app/api/json/country_codes.json"
 os.makedirs(os.path.dirname(country_codes_path), exist_ok=True)
 with open(country_codes_path, "rb") as f:
     data = f.read()
@@ -135,13 +154,11 @@ with open(country_codes_path, "rb") as f:
     country_list.update({"US Virgin Islands": "vl"})
 
 league_id_list = {}
-match1_path = "json/matches.json"
-match2_path = "json/todays_matches/2_10_2023.json"
-match3_path = "json/todays_matches/10_10_2023.json"
-os.makedirs(os.path.dirname(match1_path), exist_ok=True)
-os.makedirs(os.path.dirname(match2_path), exist_ok=True)
-os.makedirs(os.path.dirname(match3_path), exist_ok=True)
-with open(match1_path, "rb") as f:
+paths = {1: "app/api/json/matches.json",
+         2: "app/api/json/todays_matches/2_10_2023.json",
+         3: "app/api/json/todays_matches/10_10_2023.json"}
+for i in paths.values(): os.makedirs(os.path.dirname(i), exist_ok=True)
+with open(paths[1], "rb") as f:
     data = f.read()
     match_json = j.loads(data)
     for event in match_json["events"]:
@@ -149,7 +166,7 @@ with open(match1_path, "rb") as f:
             league_id_list.update({
                 event["tournament"]["uniqueTournament"]["id"]: {"name": event["tournament"]["name"],
                                                                 "category_name": event["tournament"]["uniqueTournament"]["category"]["name"]}})
-with open(match2_path, "rb") as f:
+with open(paths[2], "rb") as f:
     data = f.read()
     match_json = j.loads(data)
     for event in match_json["events"]:
@@ -157,7 +174,7 @@ with open(match2_path, "rb") as f:
             league_id_list.update({
                 event["tournament"]["uniqueTournament"]["id"]: {"name": event["tournament"]["name"],
                                                                 "category_name": event["tournament"]["uniqueTournament"]["category"]["name"]}})
-with open(match3_path, "rb") as f:
+with open(paths[3], "rb") as f:
     data = f.read()
     match_json = j.loads(data)
     for event in match_json["events"]:

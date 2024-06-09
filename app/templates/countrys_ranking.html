@@ -54,8 +54,10 @@
                         {% set h = countrys[country]["color"] %}
                         {% set a = countrys[country]["color_sec"] %}
                         {% set link = url_for('country', country_name=countrys[country]["name"].lower()) %}
-                        <a id="{{country}} {{countrys[country]['name']}}" class="item country" 
-                        style="background-color: rgba({{h[0]}}, {{h[1]}}, {{h[2]}}, 0.5); color: #fff;" href="{{ link }}">
+                        <a id="{{country}} {{countrys[country]['name']}}" 
+                        class="item country" 
+                        style="background-color: rgba({{h[0]}}, {{h[1]}}, {{h[2]}}, 0.5); color: #fff;" 
+                        href="{{ link }}">
                             <img src="{{ url_for('static', filename=countrys[country]['code']) }}" class="country_icon">
                             {{ countrys[country]["name"] }}
                         </a>

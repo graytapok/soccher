@@ -1,10 +1,11 @@
 from flask import Flask, render_template, flash, redirect, url_for, request
-from flask_login import login_user, logout_user, login_required, current_user
+from flask_login import current_user
 
-from app import app, db, login
+from app import app, db
 from app.models import User, FollowedMatch
 from app.api.api_requests import (create_match_statistics_json, create_todays_matches_json,
-                                  create_match_detail_info_json, create_categories_json, country_list)
+                                  create_match_detail_info_json, create_categories_json, country_list, league_id_list,
+                                  create_league_standings_json, create_league_media_json)
 
 from PIL import ImageColor
 from icecream import ic
@@ -214,16 +215,27 @@ def countrys_ranking():
 
 @app.route("/league_ranking/<league_id>")
 def league_ranking(league_id):
-    # Open or create league details
-    details_file = f"app/api/json/match_detail_info/{league_id}.json"
-    if not os.path.exists(details_file):
-        create_match_detail_info_json(league_id)
-        os.makedirs(os.path.dirname(details_file), exist_ok=True)
-        while not os.path.exists(details_file):
+    # Open or create league details JSON file.
+    league_standings_file = f"app/api/json/leagues_info/standings/{league_id}.json"
+    if not os.path.exists(league_standings_file):
+        create_league_standings_json(league_id)
+        os.makedirs(os.path.dirname(league_standings_file), exist_ok=True)
+        while not os.path.exists(league_standings_file):
             continue
-    with open(details_file, "rb") as f:
+    with open(league_standings_file, "rb") as f:
         data = f.read()
-        league_json = json.loads(data)
+        league_standings_json = json.loads(data)
+
+    # Open or create league media JSON file.
+    league_media_file = f"app/api/json/leagues_info/media/{league_id}.json"
+    if not os.path.exists(league_media_file):
+        create_league_media_json(league_id)
+        os.makedirs(os.path.dirname(league_media_file), exist_ok=True)
+        while not os.path.exists(league_media_file):
+            continue
+    with open(league_media_file, "rb") as f:
+        data = f.read()
+        league_media_json = json.loads(data)
     return render_template("league_ranking.html", title="League Table")
 
 @app.route("/countrys_ranking/<country_name>")
